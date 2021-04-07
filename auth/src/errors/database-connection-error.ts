@@ -5,7 +5,7 @@ export class DatabaseConnectionError extends CustomError {
   public statusCode = 500;
 
   constructor() {
-    super();
+    super("Error connection to database");
     Object.setPrototypeOf(this, DatabaseConnectionError.prototype);
   }
 
