@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { body, validationResult } from "express-validator";
-import { RequestValidataionError } from "../errors/request-validataion";
+import { RequestValidationError } from "../errors/request-validataion";
 
 import { User } from "../models/user";
 import { BadRequestError } from "../errors/bad-request-error";
@@ -21,7 +21,7 @@ router.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      throw new RequestValidataionError(errors.array());
+      throw new RequestValidationError(errors.array());
     }
 
     const { email, password } = req.body;
