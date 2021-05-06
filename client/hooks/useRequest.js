@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const useRequest = ({ url, method, body }) => {
+const useRequest = ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
   const doRequest = async () => {
     try {
       setErrors(null);
-      return await axios[method](url, body);
+      const { data } = await axios[method](url, body);
+      if (onSuccess) {
+        onSuccess(data);
+      }
+      return data;
     } catch (err) {
       setErrors(
         <div className="alert alert-danger">
@@ -19,6 +23,7 @@ const useRequest = ({ url, method, body }) => {
           </ul>
         </div>
       );
+      throw err;
     }
   };
 
