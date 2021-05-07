@@ -5,7 +5,59 @@ it("should have a route handler to /api/tickets for post request", async () => {
   const res = await request(app).post("/api/tickets").send({});
   expect(res.status).not.toEqual(404);
 });
-it("should be accessed  if user sign in", async () => {});
-it("should return err if invalid title provided", async () => {});
-it("should return err if invalid price provided", async () => {});
-it("should create a ticket with valid inputs", async () => {});
+
+it("should not be accessed if user signed in", async () => {
+  await request(app).post("/api/tickets").send({}).expect(401);
+});
+
+it("should be accessed if user signed in", async () => {
+  const res = await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.signin())
+    .send({});
+
+  expect(res).not.toEqual(401);
+});
+it("should return err if invalid title provided", async () => {
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.signin())
+    .send({
+      title: "",
+      price: 10,
+    })
+    .expect(400);
+
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.signin())
+    .send({
+      price: 10,
+    })
+    .expect(400);
+});
+it("should return err if invalid price provided", async () => {
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.signin())
+    .send({
+      title: "title",
+      price: -1,
+    })
+    .expect(400);
+
+  await request(app)
+    .post("/api/tickets")
+    .set("Cookie", global.signin())
+    .send({
+      title: "title",
+    })
+    .expect(400);
+});
+
+it("should create a ticket with valid inputs", async () => {
+  await request(app)
+    .post("/api/tickets")
+    .send({ title: "afdsa", price: "20" })
+    .expect(201);
+});
