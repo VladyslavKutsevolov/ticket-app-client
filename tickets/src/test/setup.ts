@@ -39,8 +39,9 @@ afterAll(async () => {
 });
 
 global.signin = () => {
+  const id = mongoose.Types.ObjectId().toHexString();
   const payload = {
-    id: "afafsafsafs",
+    id,
     email: "re.@.com",
   };
 
