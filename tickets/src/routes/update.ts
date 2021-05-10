@@ -7,6 +7,8 @@ import {
   requireAuth,
   validateRequest,
 } from "@vladtickets/common";
+import { natsWrapper } from "../nats-wrapper";
+import { TicketUpdatePublisher } from "../events/publishers/ticket-update-publisher";
 
 const router = express.Router();
 
@@ -35,6 +37,13 @@ router.put(
     });
 
     await ticket.save();
+
+    await new TicketUpdatePublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
 
     res.send(ticket);
   }
