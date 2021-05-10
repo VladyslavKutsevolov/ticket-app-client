@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import { body } from "express-validator";
 import {
   BadRequestError,
   NotFoundError,
@@ -6,7 +7,6 @@ import {
   requireAuth,
   validateRequest,
 } from "@vladtickets/common";
-import { body } from "express-validator";
 import mongoose from "mongoose";
 import { Ticket } from "../models/ticket";
 import { Order } from "../models/order";
@@ -22,9 +22,7 @@ router.post(
     body("ticketId")
       .not()
       .isEmpty()
-      .custom((input: string) => {
-        mongoose.Types.ObjectId.isValid(input);
-      })
+      .custom((input: string) => mongoose.Types.ObjectId.isValid(input))
       .withMessage("ticketId must be provided"),
   ],
   validateRequest,
@@ -36,7 +34,7 @@ router.post(
       throw new NotFoundError();
     }
 
-    const isReserved = ticket.isReserved();
+    const isReserved = await ticket.isReserved();
 
     if (isReserved) {
       throw new BadRequestError("Ticket is already reserved");
