@@ -1,7 +1,15 @@
-import express, { Response, Request } from "express";
-import { requireAuth, validateRequest } from "@vladtickets/common";
+import express, { Request, Response } from "express";
+import {
+  BadRequestError,
+  NotFoundError,
+  OrderStatus,
+  requireAuth,
+  validateRequest,
+} from "@vladtickets/common";
 import { body } from "express-validator";
 import mongoose from "mongoose";
+import { Ticket } from "../models/ticket";
+import { Order } from "../models/order";
 
 const router = express.Router();
 
@@ -18,7 +26,20 @@ router.post(
       .withMessage("ticketId must be provided"),
   ],
   validateRequest,
-  (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
+    const { ticketId } = req.body;
+    const ticket = await Ticket.findById(ticketId);
+
+    if (!ticket) {
+      throw new NotFoundError();
+    }
+
+    const orderExist = ticket.isReserved();
+
+    if (orderExist) {
+      throw new BadRequestError("Ticket is already reserved");
+    }
+
     res.send({});
   }
 );
