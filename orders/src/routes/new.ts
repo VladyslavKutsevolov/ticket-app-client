@@ -34,9 +34,9 @@ router.post(
       throw new NotFoundError();
     }
 
-    const orderExist = ticket.isReserved();
+    const isReserved = ticket.isReserved();
 
-    if (orderExist) {
+    if (isReserved) {
       throw new BadRequestError("Ticket is already reserved");
     }
 
