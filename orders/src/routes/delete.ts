@@ -4,8 +4,7 @@ import {
   NotFoundError,
   requireAuth,
 } from "@vladtickets/common";
-import { Order } from "../models/order";
-import { OrderStatus } from "../../../common";
+import { Order, OrderStatus } from "../models/order";
 
 const router = express.Router();
 
@@ -24,6 +23,8 @@ router.delete(
     }
 
     order.status = OrderStatus.Cancelled;
+
+    await order.save();
 
     res.status(204).send(order);
   }
