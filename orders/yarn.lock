@@ -730,10 +730,10 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vladtickets/common@^1.0.10":
-  "integrity" "sha512-ctil/MXrbTb6yHcQ/Sc28Jf6nT8gffDC1RX/nISacbuoizrrVKYkgP79fDiSaF6RPgrVs6ljMIWWqMMHQ6OcbA=="
-  "resolved" "https://registry.npmjs.org/@vladtickets/common/-/common-1.0.10.tgz"
-  "version" "1.0.10"
+"@vladtickets/common@^1.0.11":
+  "integrity" "sha512-Q79m4+VTmX4HA3M6g5BTE0RprI1yK2MEyIU5xhuDZwQyLtFU4XkdkS12M3NCz0qAlVp8c+6dy7GZMoneUTqUKQ=="
+  "resolved" "https://registry.npmjs.org/@vladtickets/common/-/common-1.0.11.tgz"
+  "version" "1.0.11"
   dependencies:
     "@types/cookie-session" "^2.0.42"
     "@types/express" "^4.17.11"
