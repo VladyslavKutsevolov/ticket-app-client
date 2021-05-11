@@ -1,11 +1,14 @@
 import request from "supertest";
 import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
+import mongoose from "mongoose";
 
 describe("Display single ticket", () => {
   it("should fetch order", async () => {
     const userID = global.signin();
+
     const ticket = Ticket.build({
+      id: mongoose.Types.ObjectId().toHexString(),
       title: "price",
       price: 20,
     });
@@ -29,7 +32,9 @@ describe("Display single ticket", () => {
 
   it("should return err if one user fetch other user order", async () => {
     const userID = global.signin();
+
     const ticket = Ticket.build({
+      id: mongoose.Types.ObjectId().toHexString(),
       title: "price",
       price: 20,
     });

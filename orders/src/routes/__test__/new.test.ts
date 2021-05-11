@@ -17,6 +17,7 @@ describe("Order creation", () => {
   });
   it("should return err if ticket is already reserved", async () => {
     const ticket = Ticket.build({
+      id: mongoose.Types.ObjectId().toHexString(),
       title: "concert",
       price: 20,
     });
@@ -41,6 +42,7 @@ describe("Order creation", () => {
 
   it("should reserve ticket", async () => {
     const ticket = Ticket.build({
+      id: mongoose.Types.ObjectId().toHexString(),
       title: "concert",
       price: 20,
     });
@@ -56,6 +58,7 @@ describe("Order creation", () => {
 
   it("should emits an order created event", async () => {
     const ticket = Ticket.build({
+      id: mongoose.Types.ObjectId().toHexString(),
       title: "concert",
       price: 20,
     });

@@ -3,10 +3,12 @@ import { app } from "../../app";
 import { Ticket } from "../../models/ticket";
 import { Order, OrderStatus } from "../../models/order";
 import { natsWrapper } from "../../nats-wrapper";
+import mongoose from "mongoose";
 
 it("should marks order cancelled", async () => {
   const user = global.signin();
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: "adsad",
     price: 20,
   });
@@ -34,7 +36,9 @@ it("should marks order cancelled", async () => {
 
 it("should emits change event", async () => {
   const user = global.signin();
+
   const ticket = Ticket.build({
+    id: mongoose.Types.ObjectId().toHexString(),
     title: "adsad",
     price: 20,
   });
