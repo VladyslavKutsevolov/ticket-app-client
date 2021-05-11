@@ -52,7 +52,7 @@ it("should acks message", async () => {
   expect(msg.ack).toHaveBeenCalled();
 });
 
-it("should does not call ack it has skipped version number", async (done) => {
+it("should does not call ack it has skipped version number", async () => {
   const { listener, data, msg } = await setup();
 
   data.version = 10;
