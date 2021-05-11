@@ -5,6 +5,8 @@ import {
   requireAuth,
 } from "@vladtickets/common";
 import { Order, OrderStatus } from "../models/order";
+import { OrderCancelledPublisher } from "../event/publishers/order-cancelled-publisher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 
@@ -12,7 +14,7 @@ router.delete(
   "/api/orders/:orderId",
   requireAuth,
   async (req: Request, res: Response) => {
-    const order = await Order.findById(req.params.orderId);
+    const order = await Order.findById(req.params.orderId).populate("ticket");
 
     if (!order) {
       throw new NotFoundError();
@@ -25,6 +27,13 @@ router.delete(
     order.status = OrderStatus.Cancelled;
 
     await order.save();
+
+    new OrderCancelledPublisher(natsWrapper.client).publish({
+      id: order.id,
+      ticket: {
+        id: order.ticket.id,
+      },
+    });
 
     res.status(204).send(order);
   }
