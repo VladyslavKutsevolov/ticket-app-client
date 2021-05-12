@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { Ticket } from "../models/ticket";
 import { body } from "express-validator";
 import {
+  BadRequestError,
   NotAuthorizedErr,
   NotFoundError,
   requireAuth,
@@ -29,6 +30,10 @@ router.put(
 
     if (ticket.userId !== req.currentUser!.id) {
       throw new NotAuthorizedErr();
+    }
+
+    if (ticket.orderId) {
+      throw new BadRequestError("Ticket is already reserved");
     }
 
     ticket.set({
