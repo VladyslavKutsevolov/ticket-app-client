@@ -2,6 +2,7 @@ import { Listener, OrderCreatedEvent, Subjects } from "@vladtickets/common";
 import { queGroupName } from "./queGroupName";
 import { Message } from "node-nats-streaming";
 import { Ticket } from "../../models/ticket";
+import { TicketUpdatePublisher } from "../publishers/ticket-update-publisher";
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
   subject: Subjects.OrderCreated = Subjects.OrderCreated;
@@ -17,6 +18,15 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
     ticket.set({ orderId: data.id });
 
     await ticket.save();
+
+    await new TicketUpdatePublisher(this.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      version: ticket.version,
+      userId: ticket.userId,
+      orderId: ticket.orderId,
+    });
 
     msg.ack();
   }
