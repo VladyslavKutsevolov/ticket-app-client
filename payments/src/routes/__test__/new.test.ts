@@ -4,8 +4,7 @@ import mongoose from "mongoose";
 import { Order } from "../../model/Order";
 import { OrderStatus } from "@vladtickets/common";
 import { stripe } from "../../stripe";
-
-jest.mock("../../stripe");
+import { Payment } from "../../model/payments";
 
 describe("Payment creation", () => {
   it("should return 404 if order not exist", async () => {
@@ -63,13 +62,14 @@ describe("Payment creation", () => {
 
   it("should return 204 with valid inputs", async () => {
     const userId = mongoose.Types.ObjectId().toHexString();
+    const price = Math.floor(Math.random() * 10000);
 
     const order = Order.build({
       id: mongoose.Types.ObjectId().toHexString(),
       status: OrderStatus.Created,
       version: 0,
       userId,
-      price: 2,
+      price,
     });
 
     await order.save();
@@ -83,10 +83,20 @@ describe("Payment creation", () => {
       })
       .expect(201);
 
-    const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
+    const stripeCharges = await stripe.charges.list({ limit: 50 });
 
-    expect(chargeOptions.source).toEqual("tok_visa");
-    expect(chargeOptions.amount).toEqual(2 * 100);
-    expect(chargeOptions.currencyf).toEqual("usd");
+    const stripeCharge = stripeCharges.data.find(
+      (charge) => charge.amount === price * 100
+    );
+
+    expect(stripeCharge).toBeDefined();
+    expect(stripeCharge!.currency).toEqual("usd");
+
+    const payment = await Payment.findOne({
+      orderId: order.id,
+      stripeId: stripeCharge!.id,
+    });
+
+    expect(payment).not.toBeNull();
   });
 });
