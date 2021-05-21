@@ -14,6 +14,14 @@ const Header = ({ currentUser }) => {
       label: "Sign out",
       href: "/auth/signout",
     },
+    currentUser && {
+      label: "Sell Ticket",
+      href: "/tickets/new",
+    },
+    currentUser && {
+      label: "My Orders",
+      href: "/orders",
+    },
   ]
     .filter((link) => link)
     .map(({ label, href }) => {
